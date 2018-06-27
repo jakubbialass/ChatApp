@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/add_favourites"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:clickable="true"/>
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/theme"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_centerInParent="true"
+        android:text="profile"
+        android:src="@drawable/cosmo"
+        android:layout_alignParentTop="true"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/circle_avatar"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:layout_centerHorizontal="true"
+        android:translationY="100dp"
+        android:src="@drawable/avatar"
+        app:civ_border_width="0dp"
+        android:layout_alignBaseline="@+id/theme"/>
+    <LinearLayout
+        android:id="@+id/counter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/theme">
+        <TextView
+            android:layout_weight="4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="7dp"
+            android:textSize="30sp"
+            android:text="Friends"/>
+        <TextView
+            android:layout_weight="3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:textSize="20sp"
+            android:gravity="left"
+            android:text="128"/>
+        <TextView
+            android:layout_weight="3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:textSize="20sp"
+            android:gravity="right"
+            android:text="456"/>
+        <TextView
+            android:layout_weight="4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingLeft="12dp"
+            android:textSize="30sp"
+            android:gravity="left"
+            android:text="Posts"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/favourites"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/counter"
+        android:text="Favourites"
+        android:gravity="center"
+        android:textSize="30sp"
+        android:layout_marginTop="6dp"/>
+    <ImageView
+        android:id="@+id/separator_1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:src="@color/colorPrimaryDark"
+        android:layout_below="@+id/favourites"
+        android:paddingRight="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="6dp"
+        android:paddingLeft="30dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/separator_1"
+        android:orientation="horizontal">
+
+        <ListView
+            android:id="@+id/favourites_list1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:scrollbars="none"
+            android:clickable="false"
+            android:divider="@null"
+            android:focusableInTouchMode="false"
+            android:translationX="60dp">
+
+        </ListView>
+
+        <ListView
+            android:id="@+id/favourites_list2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:scrollbars="none"
+            android:divider="@null"
+            android:translationX="40dp">
+
+        </ListView>
+
+    </LinearLayout>
+
+
+</RelativeLayout>
+</ScrollView>
+</RelativeLayout>

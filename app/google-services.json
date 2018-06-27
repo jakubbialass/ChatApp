@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "664383017500",
+    "firebase_url": "https://chatapp-e2a75.firebaseio.com",
+    "project_id": "chatapp-e2a75",
+    "storage_bucket": "chatapp-e2a75.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:664383017500:android:f80f9ad1b3d09fa8",
+        "android_client_info": {
+          "package_name": "com.example.kuba.chatapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "664383017500-tu4p34iokljohc5ij2hob6fes3auahe8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.kuba.chatapp",
+            "certificate_hash": "d5351ccfa7efc0e4914062e2a5c68d440d451c99"
+          }
+        },
+        {
+          "client_id": "664383017500-o4n9t9hm60ck8rl0n25qlg2h149e4onn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhsJpCq_Ox6zoVx7CHrkCXBbjwJExoPvY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "664383017500-o4n9t9hm60ck8rl0n25qlg2h149e4onn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
