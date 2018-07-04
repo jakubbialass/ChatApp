@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.example.kuba.chatapp.R;
+import com.example.kuba.chatapp.Threads;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.common.reflect.TypeToken;
@@ -85,9 +86,13 @@ public class AddFavourites extends Fragment {
         editor.putString("favourites-threads", json2);
         editor.apply();
 
-        Map<String, Object> data = new HashMap<>();
-        data.put("favourites_threads", name);
-        db.collection("users").document(mAuth.getUid()).collection("favourites").document()
+        Threads t1 = new Threads("ciuchy");
+        Threads t2 = new Threads("samochody");
+
+        Map<String, Threads> data = new HashMap<>();
+        data.put("thread", t1);
+        data.put("thread", t2);
+        db.collection("threads").document()
                 .set(data)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override

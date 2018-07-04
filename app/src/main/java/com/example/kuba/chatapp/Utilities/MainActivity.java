@@ -16,6 +16,7 @@ import com.example.kuba.chatapp.Fragments.MessagesFragment;
 import com.example.kuba.chatapp.Fragments.ProfileFragment;
 import com.example.kuba.chatapp.Fragments.ThreadsFragment;
 import com.example.kuba.chatapp.R;
+import com.example.kuba.chatapp.Threads;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,19 +39,22 @@ public class MainActivity extends AppCompatActivity {
 
     Fragment profileFragment, messagesFragment, threadsFragment, selectedFragment;
 
+    ArrayList<Threads> threadsList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        threadsList = new ArrayList<>();
+
+
         profileFragment = new ProfileFragment();
         messagesFragment = new MessagesFragment();
         threadsFragment = new ThreadsFragment();
         selectedFragment=profileFragment;
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.fragment_layout, threadsFragment);
-        fragmentTransaction.commit();
+
+        feedThreadsList(threadsList);
 
 
 
@@ -68,14 +72,13 @@ public class MainActivity extends AppCompatActivity {
                         selectedFragment=messagesFragment;
                         break;
                     case R.id.action_threads:
-                        selectedFragment=threadsFragment;
+                        feedThreadsList(threadsList);
+                        //selectedFragment=threadsFragment;
                         break;
                 }
                 if(selectedFragment!=profileFragment) {
                     FragmentManager fragmentManager = getFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.setCustomAnimations(android.R.animator.fade_in,
-                            android.R.animator.fade_in);
                     fragmentTransaction.replace(R.id.fragment_layout, selectedFragment);
                     fragmentTransaction.commit();
                 }
@@ -119,8 +122,6 @@ public class MainActivity extends AppCompatActivity {
                             profileFragment.setArguments(args);
                             FragmentManager fragmentManager = getFragmentManager();
                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                            fragmentTransaction.setCustomAnimations(android.R.animator.fade_in,
-                                    android.R.animator.fade_in);
                             fragmentTransaction.replace(R.id.fragment_layout, profileFragment);
                             fragmentTransaction.commit();
                             Log.d("lista nr 1 ", first_column.toString());
@@ -129,5 +130,51 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
+
+
+
+    public void feedThreadsList(final ArrayList<Threads> threadsList)
+    {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        if(threadsList!=null) {
+            db.collection("threads")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                                    Threads th = new Threads(snapshot.getString("title"));
+                                    threadsList.add(th);
+                                }
+
+                                Bundle args = new Bundle();
+                                args.putParcelableArrayList("threadsList", threadsList);
+                                threadsFragment.setArguments(args);
+                                FragmentManager fragmentManager = getFragmentManager();
+                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                fragmentTransaction.replace(R.id.fragment_layout, threadsFragment);
+                                fragmentTransaction.commit();
+                                Log.d("lista nr 1 ", threadsList.get(3).getText());
+
+                            }
+                        }
+                    });
+        }
+        else{
+            Bundle args = new Bundle();
+            args.putParcelableArrayList("threadsList", threadsList);
+            threadsFragment.setArguments(args);
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_layout, threadsFragment);
+            fragmentTransaction.commit();
+        }
+    }
+
+
+
+
 
 }
