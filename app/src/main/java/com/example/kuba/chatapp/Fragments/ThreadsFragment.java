@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.example.kuba.chatapp.Adapters.ThreadAdapter;
 import com.example.kuba.chatapp.R;
 import com.example.kuba.chatapp.Threads;
 

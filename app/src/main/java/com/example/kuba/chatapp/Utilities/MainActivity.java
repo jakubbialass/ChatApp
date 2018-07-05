@@ -37,9 +37,14 @@ public class MainActivity extends AppCompatActivity {
 
     BottomNavigationView nav;
 
-    Fragment profileFragment, messagesFragment, threadsFragment, selectedFragment;
+    Fragment profileFragment, messagesFragment, threadsFragment;
+    String selectedFragment;
 
     ArrayList<Threads> threadsList;
+    private long mLastClickTime = System.currentTimeMillis();
+    private static final long CLICK_TIME_INTERVAL = 0;
+
+    private boolean busy=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         profileFragment = new ProfileFragment();
         messagesFragment = new MessagesFragment();
         threadsFragment = new ThreadsFragment();
-        selectedFragment=profileFragment;
+        selectedFragment="threadsFragment";
 
         feedThreadsList(threadsList);
 
@@ -62,26 +67,38 @@ public class MainActivity extends AppCompatActivity {
         nav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                long now = System.currentTimeMillis();
+                if (now - mLastClickTime < CLICK_TIME_INTERVAL) {
+                    return false;
+                }
+                mLastClickTime = now;
                 switch (item.getItemId()) {
                     case R.id.action_profile:
-                        ArrayList<String> favouritesListFromFirestore1=new ArrayList<>();
-                        ArrayList<String> favouritesListFromFirestore2=new ArrayList<>();
-                        feedFavouritesList(favouritesListFromFirestore1, favouritesListFromFirestore2);
+                        if(selectedFragment!="profileFragment") {
+                            selectedFragment="profileFragment";
+                            //profileFragment= new ProfileFragment();
+                            ArrayList<String> favouritesListFromFirestore1 = new ArrayList<>();
+                            ArrayList<String> favouritesListFromFirestore2 = new ArrayList<>();
+                            feedFavouritesList(favouritesListFromFirestore1, favouritesListFromFirestore2);
+                        }
                         break;
                     case R.id.action_messages:
-                        selectedFragment=messagesFragment;
+                        if(selectedFragment!="messagesFragment") {
+                            messagesFragment= new MessagesFragment();
+                            selectedFragment = "messagesFragment";
+                            replaceFragment(messagesFragment);
+                        }
                         break;
                     case R.id.action_threads:
-                        feedThreadsList(threadsList);
-                        //selectedFragment=threadsFragment;
+                        if(selectedFragment!="threadsFragment") {
+                            //threadsFragment= new ThreadsFragment();
+                            selectedFragment="threadsFragment";
+                            feedThreadsList(threadsList);
+                            //selectedFragment=threadsFragment;
+                        }
                         break;
                 }
-                if(selectedFragment!=profileFragment) {
-                    FragmentManager fragmentManager = getFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.fragment_layout, selectedFragment);
-                    fragmentTransaction.commit();
-                }
+
                 return true;
             }
         });
@@ -119,13 +136,12 @@ public class MainActivity extends AppCompatActivity {
                             Bundle args = new Bundle();
                             args.putStringArrayList("favourites 1", first_column);
                             args.putStringArrayList("favourites 2", second_column);
+                            profileFragment= new ProfileFragment();
                             profileFragment.setArguments(args);
-                            FragmentManager fragmentManager = getFragmentManager();
-                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                            fragmentTransaction.replace(R.id.fragment_layout, profileFragment);
-                            fragmentTransaction.commit();
-                            Log.d("lista nr 1 ", first_column.toString());
-                            Log.d("lista nr 2 ", second_column.toString());
+                            if(selectedFragment=="profileFragment")
+                                replaceFragment(profileFragment);
+                            //Log.d("lista nr 1 ", first_column.toString());
+                            //Log.d("lista nr 2 ", second_column.toString());
                         }
                     }
                 });
@@ -137,7 +153,8 @@ public class MainActivity extends AppCompatActivity {
     {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        if(threadsList!=null) {
+        if(threadsList.size()<1) {
+            Log.d("Wszedlem do ", "IF");
             db.collection("threads")
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -151,12 +168,10 @@ public class MainActivity extends AppCompatActivity {
 
                                 Bundle args = new Bundle();
                                 args.putParcelableArrayList("threadsList", threadsList);
+                                threadsFragment= new ThreadsFragment();
                                 threadsFragment.setArguments(args);
-                                FragmentManager fragmentManager = getFragmentManager();
-                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                fragmentTransaction.replace(R.id.fragment_layout, threadsFragment);
-                                fragmentTransaction.commit();
-                                Log.d("lista nr 1 ", threadsList.get(3).getText());
+                                replaceFragment(threadsFragment);
+                                //Log.d("lista nr 1 ", threadsList.get(3).getText());
 
                             }
                         }
@@ -165,15 +180,22 @@ public class MainActivity extends AppCompatActivity {
         else{
             Bundle args = new Bundle();
             args.putParcelableArrayList("threadsList", threadsList);
+            threadsFragment= new ThreadsFragment();
             threadsFragment.setArguments(args);
-            FragmentManager fragmentManager = getFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_layout, threadsFragment);
-            fragmentTransaction.commit();
+            replaceFragment(threadsFragment);
+            Log.d("Wszedlem do ", "ELSE");
         }
     }
 
 
+
+    public void replaceFragment(Fragment fragment){
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.popBackStack();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_layout, fragment, selectedFragment);
+        fragmentTransaction.commit();
+    }
 
 
 
