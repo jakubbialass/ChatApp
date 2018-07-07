@@ -89,6 +89,7 @@ public class ThreadAdapter extends ArrayAdapter<Threads> implements View.OnClick
                 addFragment(chatFragment);
 
                 Log.d("pozycja", Integer.toString(position) );
+                Log.d("stringtitle1", stringTitle.toString() );
                 break;
         }
     }

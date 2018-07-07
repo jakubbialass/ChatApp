@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
     private long mLastClickTime = System.currentTimeMillis();
     private static final long CLICK_TIME_INTERVAL = 0;
 
-    private boolean busy=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 for (QueryDocumentSnapshot snapshot : task.getResult()) {
                                     Threads th = new Threads(snapshot.getString("title"));
+                                    Log.d("Threadsdata", snapshot.getId() + " => " + snapshot.getData());
                                     threadsList.add(th);
                                 }
 
