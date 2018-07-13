@@ -1,5 +1,6 @@
 package com.example.kuba.chatapp.Utilities;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -64,6 +65,18 @@ public class Message {
 
     public void setReceiver(String Receiver) {
         this.Receiver = Receiver;
+    }
+
+    public String getSendTime() {
+        String sendTime="00:00";
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(SendDate);
+        String hour = Integer.toString(cal.get(Calendar.HOUR_OF_DAY));
+        String minute = Integer.toString(cal.get(Calendar.MINUTE));
+        if (cal.get(Calendar.MINUTE)<10)
+            minute = "0" + Integer.toString(cal.get(Calendar.MINUTE));
+        sendTime = hour + ":" + minute;
+        return sendTime;
     }
 
 

@@ -11,7 +11,7 @@
         android:layout_marginBottom="3dp"
         android:layout_marginLeft="6dp"
         android:layout_marginRight="60dp"
-        android:background="@color/colorPrimaryDark">
+        android:background="@drawable/messages_received_shape">
 
         <TextView
             android:id="@+id/content"

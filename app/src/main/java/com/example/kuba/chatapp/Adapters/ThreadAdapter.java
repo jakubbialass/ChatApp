@@ -18,8 +18,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kuba.chatapp.Fragments.ThreadChatFragment;
+import com.example.kuba.chatapp.Interfaces.OnNavigationCollapseListener;
 import com.example.kuba.chatapp.R;
 import com.example.kuba.chatapp.Threads;
+import com.example.kuba.chatapp.Utilities.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,7 @@ public class ThreadAdapter extends ArrayAdapter<Threads> implements View.OnClick
     //private Button button;
     private ArrayList<Threads> threadsList;
     private String stringTitle;
+    OnNavigationCollapseListener onNavigationCollapseListener;
 
     private static class ViewHolder {
         Button button;
@@ -86,6 +89,7 @@ public class ThreadAdapter extends ArrayAdapter<Threads> implements View.OnClick
                 stringTitle=th.getText();
                 args.putString("stringTitle", stringTitle);
                 chatFragment.setArguments(args);
+                onNavigationCollapseListener.onCollapseChange(true);
                 addFragment(chatFragment);
 
                 Log.d("pozycja", Integer.toString(position) );
@@ -105,4 +109,11 @@ public class ThreadAdapter extends ArrayAdapter<Threads> implements View.OnClick
         fragmentTransaction.add(R.id.fragment_layout, fragment, stringTitle).addToBackStack("threadsFragment");
         fragmentTransaction.commit();
     }
+
+    public void setOnNavigationCollapseListener(OnNavigationCollapseListener onNavigationCollapseListener){
+
+        this.onNavigationCollapseListener = onNavigationCollapseListener;
+    }
+
+
 }

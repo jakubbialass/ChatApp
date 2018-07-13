@@ -7,17 +7,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_alignParentRight="true"
         android:layout_marginTop="3dp"
         android:layout_marginBottom="3dp"
-        android:layout_marginLeft="6dp"
-        android:layout_marginRight="60dp"
-        android:background="@color/colorPrimaryDark">
+        android:layout_marginLeft="60dp"
+        android:layout_marginRight="6dp"
+        android:background="@drawable/messages_sent_shape">
+
 
         <TextView
             android:id="@+id/content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="witam panstwa "
+            android:text="witam panstwa"
             android:gravity="left"
             android:paddingLeft="3dp"
             android:paddingRight="3dp"

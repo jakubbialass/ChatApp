@@ -13,8 +13,9 @@
         android:layout_centerHorizontal="true"
         android:gravity="center"
         android:text="text"
+        android:textSize="16sp"
         android:textColor="#FAFAFA"
         android:textAllCaps="false"
-        android:background="@color/colorPrimary" />
+        android:background="@drawable/thread_shape" />
 
 </RelativeLayout>

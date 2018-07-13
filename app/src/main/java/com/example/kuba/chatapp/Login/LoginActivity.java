@@ -1,6 +1,8 @@
 package com.example.kuba.chatapp.Login;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,6 +13,8 @@ import android.widget.Toast;
 
 import com.example.kuba.chatapp.R;
 import com.example.kuba.chatapp.Utilities.MainActivity;
+import com.example.kuba.chatapp.Utilities.Message;
+import com.example.kuba.chatapp.Utilities.User;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -19,13 +23,23 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.internal.Constants;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -33,6 +47,7 @@ public class LoginActivity extends AppCompatActivity {
     private SignInButton signInButton;
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +57,8 @@ public class LoginActivity extends AppCompatActivity {
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
+
+        db = FirebaseFirestore.getInstance();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         mAuth = FirebaseAuth.getInstance();
@@ -58,6 +75,8 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
+
+
     }
 
     @Override
@@ -65,6 +84,12 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser!=null){
+            Intent intent = new Intent(this, MainActivity.class);
+            finish();
+            startActivity(intent);
+
+        }
         //updateUI(currentUser);
     }
 
@@ -101,6 +126,10 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("success", "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+
+                            checkIfUserExists(mAuth);
+
+
                             enterApp();
                         } else {
                             // If sign in fails, display a message to the user.
@@ -119,5 +148,51 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
+
+
+    public void checkIfUserExists(final FirebaseAuth mAuth){
+        String uid = mAuth.getCurrentUser().getUid().toString();
+        SharedPreferences pref = getSharedPreferences(uid, Activity.MODE_PRIVATE);
+
+        if (!pref.contains(uid)) {
+            DocumentReference docRef = db.collection("users").document(uid);
+            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            // do nothing
+                        } else {
+                            // add new user
+                            User user = new User(mAuth.getCurrentUser().getUid().toString(), mAuth.getCurrentUser().getDisplayName().toString(), Calendar.getInstance().getTime());
+
+                            db.collection("users").document(mAuth.getCurrentUser().getUid().toString()).collection("informations")
+                                    .add(user)
+                                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                        @Override
+                                        public void onSuccess(DocumentReference documentReference) {
+
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+
+                                        }
+                                    });
+                        }
+                    } else {
+                        Log.d("eueu", "get failed with ", task.getException());
+                    }
+                }
+            });
+            pref.edit().putBoolean("FIRST_LAUNCH", true).commit();
+        }
+
+
+    }
+
+
 
 }

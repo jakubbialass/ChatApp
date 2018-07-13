@@ -37,6 +37,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 /**
  * Created by Kuba on 23.06.2018.
  */
@@ -45,6 +47,7 @@ public class ProfileFragment extends Fragment{
 
     FirebaseFirestore db;
     FirebaseAuth mAuth;
+    CircleImageView avatar;
 
     private DocumentReference mFavouriteRef= FirebaseFirestore.getInstance().document("user/"/*+mAuth.getUid()*/+"favourites");
 
@@ -62,6 +65,8 @@ public class ProfileFragment extends Fragment{
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
 
+        avatar = view.findViewById(R.id.circle_avatar);
+        //avatar.setImageResource(user.getPhotoUrl());
         /////////////////////
         FloatingActionButton butt = view.findViewById(R.id.add_favourites);
         butt.setOnClickListener(new View.OnClickListener() {

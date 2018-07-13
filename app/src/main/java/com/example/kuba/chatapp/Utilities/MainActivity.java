@@ -11,6 +11,10 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 
 import com.example.kuba.chatapp.Fragments.MessagesFragment;
 import com.example.kuba.chatapp.Fragments.ProfileFragment;
@@ -33,7 +37,7 @@ import java.util.ArrayList;
  * Created by Kuba on 23.06.2018.
  */
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ThreadsFragment.OnCollapseListener {
 
     BottomNavigationView nav;
 
@@ -101,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+
 
 
 
@@ -197,6 +202,53 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
+
+    public void expandOrCollapse(final View v, String exp_or_colpse) {
+        TranslateAnimation anim = null;
+        if(exp_or_colpse.equals("expand"))
+        {
+            anim = new TranslateAnimation(0.0f, 0.0f, v.getHeight(), 0.0f);
+            v.setVisibility(View.VISIBLE);
+        }
+        else{
+            anim = new TranslateAnimation(0.0f, 0.0f, 0.0f, v.getHeight());
+            Animation.AnimationListener collapselistener= new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    v.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    v.setVisibility(View.GONE);
+                }
+            };
+
+            anim.setAnimationListener(collapselistener);
+        }
+
+        // To Collapse
+        //
+
+        anim.setDuration(300);
+        anim.setInterpolator(new AccelerateInterpolator(0.5f));
+        v.startAnimation(anim);
+    }
+
+
+
+    public void onCollapse(boolean collapse) {
+        // The user selected the headline of an article from the HeadlinesFragment
+        // Do something here to display that article
+        if (collapse)
+            expandOrCollapse(nav, "collapse");
+        else
+            expandOrCollapse(nav, "expand");
+    }
 
 
 }
